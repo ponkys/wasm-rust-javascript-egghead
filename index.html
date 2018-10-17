@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            
+           
+            
+        </script>
+    </head>
+    <body></body>
+    <script>
+        const appendNumberToBody = (number) => {
+            const node = document.createTextNode("***" + number + "***");
+            document.body.appendChild(node);
+        }
+
+        const importObj = {
+            env: {
+                appendNumberToBody: appendNumberToBody
+            }
+        }
+
+        appendNumberToBody(5);
+
+        WebAssembly.instantiateStreaming(fetch("utils.gc.wasm"), importObj)
+            .then(wasmModule => {
+                // loading function from rust
+                const result = wasmModule.instance.exports.add_one(202);
+                const text = document.createTextNode(result);
+                document.body.appendChild(text);
+                // pass javascript function to rust and run it in rust code lib.rs
+                wasmModule.instance.exports.run();
+            }
+        );    
+    </script>
+</html>
